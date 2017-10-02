@@ -12,7 +12,8 @@ class BaseMixin(object):
                            nullable=False,
                            server_default=func.now(),
                            onupdate=func.now())
-    ## TODO: updated_by ??
+    created_by = db.Column(db.Integer, nullable=False)
+    updated_by = db.Column(db.Integer, nullable=False)
 
 ## TODO: origins ? for CORS
 class Form(BaseMixin, db.Model):
@@ -23,17 +24,25 @@ class Form(BaseMixin, db.Model):
     description = db.Column(db.String(500))
     public = db.Column(db.Boolean, nullable=False)
 
-## TODO: own PK or compound of form_id + version ?
-## TODO: unique form_id + version
-class FormVersion(BaseMixin, db.Model):
+class FormVersion(db.Model):
     __tablename__ = 'form_versions'
 
     form_id = db.Column(db.Integer,
                         db.ForeignKey('forms.id', ondelete='CASCADE'),
+                        primary_key=True,
                         nullable=False)
-    version = db.Column(db.Integer)
+    version = db.Column(db.Integer, primary_key=True, nullable=False)
     published = db.Column(db.Boolean, nullable=False)
     schema = db.Column(JSONB)
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           server_default=func.now())
+    updated_at = db.Column(db.DateTime,
+                           nullable=False,
+                           server_default=func.now(),
+                           onupdate=func.now())
+    created_by = db.Column(db.Integer, nullable=False)
+    updated_by = db.Column(db.Integer, nullable=False)
 
 class FormSubmission(BaseMixin, db.Model):
     __tablename__ = 'form_submissions'
@@ -48,4 +57,4 @@ class FormSubmission(BaseMixin, db.Model):
     ip = db.Column(INET)
     user_agent = db.Column(db.String(2048))
     referrer = db.Column(db.String(8192))
-    status = db.Column(db.String(255))
+    status = db.Column(db.String(255)) ## TODO: new, submitted
