@@ -12,6 +12,8 @@
   "dependencies": {
     "axios": "^0.15.3",
     "cleave.js": "^0.7.22",
+    "jexl": "^1.1.4",
+    "mustache": "^2.3.0",
     "phila-standards": "0.8.0",
     "signature_pad": "^2.2.0",
     "vue": "^2.3.4",

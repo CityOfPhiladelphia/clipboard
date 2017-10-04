@@ -8,15 +8,21 @@
     </div>
 
     <div class="columns medium-20">
-      <phila-form :schema="facilityUse.schema" v-model="facilityUseModel" :formOptions="facilityUse.formOptions"></phila-form>
+      <clipboard-form :schema="facilityUse.schema" :model="facilityUseModel"></clipboard-form>
     </div>
   </div>
 </template>
 
 <script>
-  import facilityUse from './testForms/facilityUse';
+  import ClipboardForm from './components/ClipboardForm.vue'
 
-  export default {    
+  import facilityUse from './testForms/facilityUse2'
+
+  export default {
+    components: {
+      ClipboardForm
+    },
+
     data () {
       return {
         facilityUse: facilityUse,
