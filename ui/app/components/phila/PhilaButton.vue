@@ -1,6 +1,7 @@
 <template>
   <component
-    class="button full-width"
+    class="button"
+    :class="{'full-width': fullWidth}"
     :is="href ? 'a' : 'button'"
     :href="href"
     :disabled="disabled"
@@ -22,6 +23,10 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      fullWidth: {
+        type: Boolean,
+        default: true
       }
     },
 

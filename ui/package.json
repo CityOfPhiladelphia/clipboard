@@ -11,13 +11,12 @@
   "license": "",
   "dependencies": {
     "axios": "^0.15.3",
-    "cleave.js": "^0.7.22",
     "jexl": "^1.1.4",
     "mustache": "^2.3.0",
-    "phila-standards": "0.8.0",
+    "phila-standards": "0.11.2",
     "signature_pad": "^2.2.0",
-    "vue": "^2.3.4",
-    "vue-form-generator": "^2.0.0",
+    "uuid": "^3.1.0",
+    "vue": "^2.4.4",
     "vue-markdown": "^2.1.3"
   },
   "devDependencies": {
@@ -36,8 +35,8 @@
     "style-loader": "^0.16.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
-    "vue-loader": "^12.2.1",
-    "vue-template-compiler": "^2.3.4",
+    "vue-loader": "^13.0.5",
+    "vue-template-compiler": "^2.4.4",
     "webpack": "^2.3.2",
     "webpack-dev-server": "^2.4.2"
   }

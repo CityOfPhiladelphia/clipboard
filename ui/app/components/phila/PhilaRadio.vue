@@ -5,8 +5,8 @@
       <br v-if="index > 0">
       <input
         type="radio"
-        :id="getInputId(name, item.value)"
-        :name="name"
+        :id="getInputId(item.value)"
+        :name="getInputId(item.value)"
         :value="item.value"
         :disabled="disabled"
         :required="required"
@@ -15,7 +15,7 @@
         :tabindex='tabindex'
         v-model="inputValue"
         ref="input">
-      <label :for="getInputId(name, item.value)">{{ item.label }}</label>
+      <label :for="getInputId(item.value)">{{ item.label }}</label>
     </template>
     <div class="input-error">
       <phila-form-error-message
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+  import uuidv4 from 'uuid/v4'
   import Input from './mixins/input'
   import PhilaFormErrorMessage from './PhilaFormErrorMessage.vue'
 
@@ -103,9 +104,18 @@
       }
     },
 
+    data () {
+      return {
+        ids: {}
+      }
+    },
+
     methods: {
-      getInputId (name, value) {
-        return name + '_' + value.toString().substring(0, 50).toLowerCase().replace(' ', '_')
+      getInputId (value) {
+        if (this.ids[value])
+          return this.ids[value]
+        this.ids[value] = uuidv4()
+        return this.ids[value]
       }
     }
   }

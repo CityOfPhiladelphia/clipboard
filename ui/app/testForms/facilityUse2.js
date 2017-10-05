@@ -144,6 +144,28 @@ export default {
           label: 'Event Description',
           field_name: 'event_description',
           required: true
+        },
+        {
+          type: 'repeating',
+          field_name: 'things',
+          legend: 'Things',
+          add_label: 'Add Thing',
+          items: [
+            {
+              type: 'text',
+              label: 'A Thing',
+              field_name: 'a_thing'
+            },
+            {
+              type: 'radios',
+              label: 'Which thing?',
+              field_name: 'which_thing',
+              items: [
+                'Car',
+                'Stereo'
+              ]
+            }
+          ]
         }
       ]
     },

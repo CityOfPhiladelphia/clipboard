@@ -8,7 +8,7 @@
     </div>
 
     <div class="columns medium-20">
-      <clipboard-form :schema="facilityUse.schema" :model="facilityUseModel"></clipboard-form>
+      <clipboard-form :schema="facilityUse.schema" :data="facilityUseModel"></clipboard-form>
     </div>
   </div>
 </template>
