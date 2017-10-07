@@ -1,5 +1,15 @@
 <script>
   //import Vue from 'vue'
+  import { validationMixin } from 'vuelidate'
+  import {
+    required,
+    minLength,
+    maxLength,
+    email,
+    alpha,
+    alphaNum,
+    numeric,
+    url } from 'vuelidate/lib/validators'
   import VueMarkdown from 'vue-markdown'
   import jexl from 'Jexl'
 
@@ -9,20 +19,20 @@
   import PhilaButton from './phila/PhilaButton.vue'
 
   // might be useful https://stackoverflow.com/a/6491621/1366166
-  const getModelValue = (model, path) => {
-    let curModel = model
+  const getValue = (obj, path) => {
+    let curr = obj
     for (let i = 0, ln = path.length; i < ln; i++) {
       let k = path[i]
-      if (k in curModel)
-        curModel = curModel[k]
+      if (k in curr)
+        curr = curr[k]
       else
         return
     }
-    return curModel
+    return curr
   }
 
-  const setModelValue = (model, path, value) => {
-    let curr = model
+  const setValue = (obj, path, value) => {
+    let curr = obj
     for (let i = 0, ln = path.length; i < ln; i++) {
       let k = path[i]
       if (i < (ln - 1)) {
@@ -52,11 +62,68 @@
     }
 
     if (schema.type == 'repeating')
-      return setModelValue(model, path.concat([schema.field_name]), [])
+      return setValue(model, path.concat([schema.field_name]), [])
 
-    // getModelValue ??
+    // getValue ??
     if (schema.field_name)
-      setModelValue(model, path.concat([schema.field_name]), null)
+      setValue(model, path.concat([schema.field_name]), null)
+  }
+
+  const initValidation = (validations, path, schema) => {
+    if (Array.isArray(schema))
+      return schema.map(initValidation.bind({}, validations, path))
+
+    if (schema.type == 'fieldset') {
+      let newPath = path
+      if (schema.field_name)
+        newPath = path.concat([schema.field_name])
+      return initValidation(validations, newPath, schema.children)
+    }
+
+    if (schema.type == 'repeating')
+      return ////
+
+    if (schema.validation) {
+      let fieldValidation = {}
+
+      if (schema.validation.required === true)
+        fieldValidation.required = required
+
+      if (schema.validation.maxLength)
+        fieldValidation.maxLength = maxLength(schema.validation.maxLength)
+
+      if (schema.validation.minLength)
+        fieldValidation.minLength = minLength(schema.validation.minLength)
+
+      if (schema.validation.alpha === true)
+        fieldValidation.alpha = alpha
+
+      if (schema.validation.alpha_numeric === true)
+        fieldValidation.alpha_numeric = alphaNum
+
+      if (schema.validation.numeric === true)
+        fieldValidation.numeric = numeric
+
+      if (schema.validation.email === true)
+        fieldValidation.email = email
+
+      if (schema.validation.url === true)
+        fieldValidation.url = url
+
+      // TODO: not disposable email?
+      // TODO: regex?
+      // TODO: custom error message?
+      // TODO: requiredIf - needs jexl
+      // TODO: requiredUnless - needs jexl
+      // TODO: between ?
+      // TODO: sameAs - needs jexl or pointer?
+      // TODO: or ?
+      // TODO: and ?
+
+      console.log(fieldValidation)
+
+      setValue(validations, path.concat([schema.field_name]), fieldValidation)
+    }
   }
 
   const renderForm = (vm, model, path, createElement, schema) => {
@@ -81,12 +148,13 @@
     }
 
     if (schema.type == 'repeating') {
-      let collection = getModelValue(model, path.concat([schema.field_name]))
+      let collection = getValue(model, path.concat([schema.field_name]))
       if (!collection) {
-        setModelValue(model, path.concat([schema.field_name]), [])
-        collection = getModelValue(model, path.concat([schema.field_name]))
+        setValue(model, path.concat([schema.field_name]), [])
+        collection = getValue(model, path.concat([schema.field_name]))
       }
 
+      // TODO: how to not send this empty one?
       if (collection.length === 0)
         collection.push({})
 
@@ -150,70 +218,60 @@
     //   })
     // }
 
-    if (schema.type == 'text') {
-      const props = {
-        name: schema.field_name,
-        label: schema.label,
-        type: schema.input_type || 'text',
-        required: schema.required || false,
-        value: getModelValue(model, path.concat([schema.field_name])),
-        // style: {
-        //   display () {
-        //     console.log('being run')
-        //     return 'none'
-        //   }
-        // }
-        // TODO: validation
+    const fieldPath = path.concat([schema.field_name])
+    const validationPath = ['model'].concat(fieldPath)
+    const $v = getValue(vm.$v, validationPath)
+    const props = {
+      name: schema.field_name,
+      fieldPath: validationPath,
+      label: schema.label,
+      type: schema.input_type || 'text',
+      required: (schema.validation && schema.validation.required) || false,
+      value: getValue(model, fieldPath),
+      hasError: ($v && $v.$error) || false,
+      errorMessageLabel: schema.error_message_label
+    }
+    const on = {
+      input (value) {
+        setValue(model, fieldPath, value)
+        console.log(model)
+      }
+    }
+
+    if ($v)
+      on.blur = () => {
+        $v.$touch()
+        console.log($v)
       }
 
+    if (schema.type == 'text') {
       return createElement('phila-text-field', {
         props,
-        on: {
-          input (value) {
-            setModelValue(model, path.concat([schema.field_name]), value)
-            console.log(model)
-          }
-        }
+        on
       })
     }
 
-    if (schema.type == 'radios')
+    if (schema.type == 'radios') {
+      props.items = schema.items
       return createElement('phila-radio', {
-        props: {
-          name: schema.field_name,
-          label: schema.label,
-          required: schema.required || false,
-          value: getModelValue(model, path.concat([schema.field_name])),
-          items: schema.items
-        },
-        on: {
-          input (value) {
-            setModelValue(model, path.concat([schema.field_name]), value)
-            console.log(model)
-          }
-        }
+        props,
+        on
       })
+    }
 
-    if (schema.type == 'select')
+    if (schema.type == 'select') {
+      props.items = schema.items
       return createElement('phila-select', {
-        props: {
-          name: schema.field_name,
-          label: schema.label,
-          required: schema.required || false,
-          value: getModelValue(model, path.concat([schema.field_name])),
-          items: schema.items
-        },
-        on: {
-          input (value) {
-            setModelValue(model, path.concat([schema.field_name]), value)
-            console.log(model)
-          }
-        }
+        props,
+        on
       })
+    }
   }
 
   export default {
     name: 'clipboard-form',
+
+    mixins: [validationMixin],
 
     components: {
       PhilaTextField,
@@ -233,10 +291,12 @@
       }
     },
 
-    watch: {
-      model () {
-        console.log(this)
-      }
+    beforeCreate () {
+      let validations = {}
+      initValidation(validations, [], this.$options.propsData.schema)
+      console.log(validations)
+      this.$options.validations = { model: validations }
+      validationMixin.beforeCreate.call(this)
     },
 
     data () {
@@ -244,7 +304,6 @@
       //   return this.model
       let model = {}
       initReactiveModel(model, [], this.schema)
-      console.log(model)
       return {
         model: model
       }

@@ -1,6 +1,5 @@
 export default {
   data () {
-    console.log(this.value)
     return {
       focused: false,
       tabFocused: false,

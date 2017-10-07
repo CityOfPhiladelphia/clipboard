@@ -12,35 +12,39 @@ export default {
           type: 'text',
           label: 'Applicant First Name',
           field_name: 'first_name',
-          required: true,
-          validator: 'string'
+          validation: {
+            required: true, // ???
+            minLength: 2
+          }
         },
         {
           type: 'text',
           label: 'Applicant Last Name',
           field_name: 'last_name',
-          required: true,
-          validator: 'string'
+          validation: {
+            required: true
+          }
         },
         {
           type: 'text',
           label: 'Applicant Organization Name',
           field_name: 'organization',
-          required: true,
-          validator: 'string'
+          validation: {
+            required: true
+          }
         },
         {
           type: 'text',
           label: 'Applicant Phone',
           field_name: 'phone',
-          required: true,
-          validator: 'string'
+          validation: {
+            required: true
+          }
         },
         {
           type: 'text',
           label: 'Email Address',
           field_name: 'email',
-          required: true,
           validator: 'email'
         }
       ]
@@ -53,15 +57,17 @@ export default {
           type: 'text',
           label: 'Facility / Park Name',
           field_name: 'facility_park_name',
-          required: true,
-          validator: 'string'
+          validation: {
+            required: true
+          }
         },
         {
           type: 'radios',
           label: 'Requested Facility',
           field_name: 'requested_facility',
-          required: true,
-          validator: 'string',
+          validation: {
+            required: true
+          },
           items: [
             'Computer lab',
             'Multi-purpose Room',
@@ -74,14 +80,15 @@ export default {
           type: 'text',
           label: 'Requested Facility Other',
           field_name: 'requested_facility_other',
-          validator: 'string',
+          validation: {
+            required: true
+          },
           visible: "requested_facility == 'Other'"
         },
         {
           type: 'select',
           label: 'Age Group',
           field_name: 'age_group',
-          required: true,
           items: [
             'Under 5',
             '5-10',
@@ -94,21 +101,23 @@ export default {
           type: 'text',
           label: 'Activity Type(s)',
           field_name: 'activity_types',
-          required: true,
-          validator: 'string'
+          validation: {
+            required: true
+          }
         },
         {
           type: 'text',
           label: 'School Name (If Applicable)',
           field_name: 'school_name',
-          validator: 'string'
+          validation: {
+            required: true
+          }
         },
         {
           type: 'radios',
           data_type: 'boolean',
           label: 'Will you be charging a fee to participants of this program?',
           field_name: 'charging',
-          required: true,
           items: [
             {
               label: 'Yes',
@@ -126,13 +135,14 @@ export default {
           data_type: 'number',
           label: 'Expected Group Size',
           field_name: 'expected_group_size',
-          required: true
+          validation: {
+            required: true
+          }
         },
         {
           type: 'radios',
           label: 'Group Size Per',
           field_name: 'group_size_per',
-          required: true,
           items: [
             'Day / Night',
             'Season',
@@ -143,7 +153,9 @@ export default {
           multiline: true,
           label: 'Event Description',
           field_name: 'event_description',
-          required: true
+          validation: {
+            required: true
+          }
         },
         {
           type: 'repeating',

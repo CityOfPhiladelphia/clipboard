@@ -13,12 +13,27 @@
     notDisposableEmail: '{{label}} cannot be a disposable email address'
   }
 
+  const getValue = (obj, path) => {
+    let curr = obj
+    for (let i = 0, ln = path.length; i < ln; i++) {
+      let k = path[i]
+      if (k in curr)
+        curr = curr[k]
+      else
+        return
+    }
+    return curr
+  }
+
   export default {
     name: 'phila-form-error-message',
 
     props: {
       field: {
         type: String
+      },
+      fieldPath: {
+        type: [Array, String]
       },
       label: {
         type: String
@@ -40,7 +55,17 @@
           }
         }
 
-        const $localV = $v[this.field]
+        let $localV
+        if (this.fieldPath) {
+          let fieldPath
+          if (Array.isArray(this.fieldPath))
+            fieldPath = this.fieldPath
+          else
+            fieldPath = this.fieldPath.split('.')
+          $localV = getValue($v, this.fieldPath)
+        } else
+          $localV = $v[this.field]
+
         const messages = Object.assign(
           {},
           defaultValidationMessages,

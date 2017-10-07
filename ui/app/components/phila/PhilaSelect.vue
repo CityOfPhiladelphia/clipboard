@@ -23,7 +23,8 @@
         role="alert"
         :field="name"
         :label="errorMessageLabel || label"
-        :validationMessages="validationMessages"></phila-form-error-message>
+        :validation-messages="validationMessages"
+        :field-path="fieldPath"></phila-form-error-message>
     </div>
   </div>
 </template>
@@ -69,6 +70,9 @@
       },
       errorMessage: {
         type: String
+      },
+      fieldPath: {
+        type: [Array, String]
       }
     },
 
