@@ -13,8 +13,8 @@ export default {
           label: 'Applicant First Name',
           field_name: 'first_name',
           validation: {
-            required: true, // ???
-            minLength: 2
+            required: true,
+            min_length: 2
           }
         },
         {
@@ -162,11 +162,18 @@ export default {
           field_name: 'things',
           legend: 'Things',
           add_label: 'Add Thing',
-          items: [
+          validation: {
+            required: true,
+            min_length: 2
+          },
+          repeating: [
             {
               type: 'text',
               label: 'A Thing',
-              field_name: 'a_thing'
+              field_name: 'a_thing',
+              validation: {
+                required: true
+              }
             },
             {
               type: 'radios',
