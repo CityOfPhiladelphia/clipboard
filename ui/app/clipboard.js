@@ -65,17 +65,17 @@ const getFieldValidation = (rawFieldValidation) => {
   if (rawFieldValidation.required === true)
     fieldValidation.required = required
 
-  if (rawFieldValidation.maxLength)
-    fieldValidation.maxLength = maxLength(rawFieldValidation.maxLength)
+  if (rawFieldValidation.max_length)
+    fieldValidation.maxLength = maxLength(rawFieldValidation.max_length)
 
-  if (rawFieldValidation.minLength)
-    fieldValidation.minLength = minLength(rawFieldValidation.minLength)
+  if (rawFieldValidation.min_length)
+    fieldValidation.minLength = minLength(rawFieldValidation.min_length)
 
   if (rawFieldValidation.alpha === true)
     fieldValidation.alpha = alpha
 
   if (rawFieldValidation.alpha_numeric === true)
-    fieldValidation.alpha_numeric = alphaNum
+    fieldValidation.alphaNum = alphaNum
 
   if (rawFieldValidation.numeric === true)
     fieldValidation.numeric = numeric
